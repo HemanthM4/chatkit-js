@@ -1,0 +1,27 @@
+steps:
+  # Build the container image and push to GCR
+  - name: 'gcr.io/cloud-builders/docker'
+    args: [ 'build', '-t', 'gcr.io/$PROJECT_ID/hello-react-site:$SHORT_SHA', '.' ]
+
+  - name: 'gcr.io/cloud-builders/docker'
+    args: [ 'push', 'gcr.io/$PROJECT_ID/hello-react-site:$SHORT_SHA' ]
+
+  # Deploy to Cloud Run
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: 'gcloud'
+    args:
+      - 'run'
+      - 'deploy'
+      - 'hello-react-site'
+      - '--image'
+      - 'gcr.io/$PROJECT_ID/hello-react-site:$SHORT_SHA'
+      - '--region'
+      - 'us-central1'
+      - '--platform'
+      - 'managed'
+      - '--allow-unauthenticated'
+      - '--port'
+      - '8080'
+
+images:
+  - 'gcr.io/$PROJECT_ID/hello-react-site:$SHORT_SHA'

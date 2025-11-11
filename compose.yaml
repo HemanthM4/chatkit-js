@@ -1,0 +1,6 @@
+services:
+  chatkitjs:
+    image: chatkitjs
+    build:
+      context: .
+      dockerfile: ./Dockerfile
